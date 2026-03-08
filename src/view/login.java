@@ -67,7 +67,7 @@ public class login extends JFrame {
             List<usuario> lista = gestor_archivos.cargar_usuarios();
             for(usuario u : lista) {
                 if(u.get_nombre().equals(nom) && u.get_contrasenia_hash().equals(pass_hash)) {
-                    new menu().setVisible(true);
+                    new menu(u.get_nombre()).setVisible(true);
                     this.dispose(); 
                     return;
                 }

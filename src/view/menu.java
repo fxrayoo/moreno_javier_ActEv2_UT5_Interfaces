@@ -4,10 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import logica.gestion_nota;
 import model.nota;
+import persistencia.gestor_archivos;
 
 public class menu extends JFrame {
     private gestion_nota logica;
     private DefaultListModel<nota> modelo_lista;
+    private String usuario_actual;
 
     private JList<nota> lista_visual;
     private JTextField campo_titulo;
@@ -16,15 +18,20 @@ public class menu extends JFrame {
     private JLabel etiqueta_estado;
     private JButton boton_crear, boton_editar, boton_borrar, boton_limpiar, boton_vaciar;
 
-    public menu() {
+    public menu(String usuario) {
+        this.usuario_actual = usuario;
         logica = new gestion_nota();
+        for (nota n : gestor_archivos.cargar_notas_usuario(usuario_actual)) {
+            logica.agregar_nota(n);
+        }
         configurar_ventana();
         incializar_componentes();
         asignar_eventos();
+        actualizar_lista();
     }
 
     private void configurar_ventana() {
-        setTitle("Gestor de notas:");
+        setTitle("Gestor de notas - Usuario: " + usuario_actual);
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -87,11 +94,12 @@ public class menu extends JFrame {
                 etiqueta_estado.setText("Ingrese un título");
                 return;
             }
-            nota nueva = new nota(campo_titulo.getText(), area_contenido.getText(), "usuario");
+            nota nueva = new nota(campo_titulo.getText(), area_contenido.getText(), usuario_actual);
             logica.agregar_nota(nueva);
+            gestor_archivos.guardar_notas_usuario(usuario_actual, logica.get_lista_notas());
             actualizar_lista();
             limpiar_campos();
-            etiqueta_estado.setText("Se ha añadido una nueva nota");
+            etiqueta_estado.setText("Nota guardada automáticamente");
         });
 
         lista_visual.addListSelectionListener(e -> {
@@ -109,8 +117,9 @@ public class menu extends JFrame {
             int idx = lista_visual.getSelectedIndex();
             if (idx != -1) {
                 logica.actualizar_nota(idx, campo_titulo.getText(), area_contenido.getText());
+                gestor_archivos.guardar_notas_usuario(usuario_actual, logica.get_lista_notas());
                 actualizar_lista();
-                etiqueta_estado.setText("Se ha actualizado la nota");
+                etiqueta_estado.setText("Cambios guardados");
             } else {
                 etiqueta_estado.setText("Por favor, elija una de las creadas");
             }
@@ -120,9 +129,10 @@ public class menu extends JFrame {
             nota n = lista_visual.getSelectedValue();
             if (n != null) {
                 logica.eliminar_nota(n);
+                gestor_archivos.guardar_notas_usuario(usuario_actual, logica.get_lista_notas());
                 actualizar_lista();
                 limpiar_campos();
-                etiqueta_estado.setText("Se ha borrado la nota");
+                etiqueta_estado.setText("Nota eliminada");
             }
         });
 
@@ -135,9 +145,10 @@ public class menu extends JFrame {
             int opcion = JOptionPane.showConfirmDialog(this, "Borrar todas las notas?", "Seguro?", JOptionPane.YES_NO_OPTION);
             if (opcion == JOptionPane.YES_OPTION) {
                 logica.limpiar_notas();
+                gestor_archivos.guardar_notas_usuario(usuario_actual, logica.get_lista_notas());
                 actualizar_lista();
                 limpiar_campos();
-                etiqueta_estado.setText("Listado vaciado por completo.");
+                etiqueta_estado.setText("Listado vaciado");
             }
         });
 
