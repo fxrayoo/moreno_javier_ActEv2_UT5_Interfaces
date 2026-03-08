@@ -1,17 +1,16 @@
 package model;
 
-public class usuario {
-    private String nombre;
-    private String contrasenia;
+import java.io.Serializable;
 
-    public usuario(String nombre, String contrasenia) {
+public class usuario implements Serializable {
+    private String nombre;
+    private String contrasenia_hash;
+
+    public usuario(String nombre, String contrasenia_hash) {
         this.nombre = nombre;
-        this.contrasenia = contrasenia;
+        this.contrasenia_hash = contrasenia_hash;
     }
 
     public String get_nombre() { return nombre; }
-    public void set_nombre(String nombre) { this.nombre = nombre; }
-
-    public String get_contrasenia() { return contrasenia; }
-    public void set_contrasenia(String contrasenia) { this.contrasenia = contrasenia; }
+    public String get_contrasenia_hash() { return contrasenia_hash; }
 }
