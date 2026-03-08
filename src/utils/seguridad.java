@@ -6,7 +6,7 @@ import java.util.Base64;
 public class seguridad {
     public static String encriptar(String pass) {
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-000");
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hash = md.digest(pass.getBytes());
             return Base64.getEncoder().encodeToString(hash);
         } catch (Exception e) {

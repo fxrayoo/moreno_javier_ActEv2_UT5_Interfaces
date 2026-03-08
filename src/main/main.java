@@ -1,11 +1,11 @@
 package main;
 
-import view.menu;
+import view.login;
 
 public class main {
-    public static void Main (String[] args) {
+    public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(() -> {
-            menu ventana = new menu();
+            login ventana = new login();
             ventana.setVisible(true);
         });
     }
